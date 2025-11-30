@@ -1,0 +1,9 @@
+fleet/
+  flake.nix
+  profiles/
+    base.nix
+  hosts/
+    host1.nix
+    host2.nix
+  home/
+    ops.nix

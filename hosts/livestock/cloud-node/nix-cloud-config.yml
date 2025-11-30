@@ -1,0 +1,13 @@
+#cloud-config
+runcmd:
+  # Clone NixOS config from Git
+  - git clone https://github.com/yourusername/nixos-config.git /etc/nixos
+  
+  # Apply NixOS configuration
+  - nixos-rebuild switch --flake /etc/nixos#net-node
+  
+  # Set up auto-update (already in configuration.nix)
+  - systemctl enable nixos-auto-update.timer
+  - systemctl start nixos-auto-update.timer
+
+final_message: "NixOS configured from Git successfully."
