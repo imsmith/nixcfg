@@ -10,9 +10,21 @@
 
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Noctalia shell and dependencies
+    quickshell = {
+      url = "github:outfoxxed/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.quickshell.follows = "quickshell";
+    };
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, nixpkgs-unstable, ... }:
+  outputs = { self, nixpkgs, darwin, home-manager, nixpkgs-unstable, quickshell, noctalia, ... }:
   let
     system = "aarch64-darwin";   # Apple Silicon
     pkgs = import nixpkgs { 
@@ -29,7 +41,7 @@
 
       modules = [
         # Import darwin system modules
-        ./modules/darwin/homebrew.nix
+        ./modules/gui/darwin/homebrew.nix
         
         {
           # Required by nix-darwin
@@ -65,6 +77,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = { inherit noctalia; };
 
           home-manager.users.iansmith = { pkgs, config, lib, ... }: {
             home.stateVersion = "25.05";
@@ -74,14 +87,18 @@
 
             # Import modular configurations
             imports = [
-              ./modules/cli/local-base.nix
+              ./modules/cli/cli-base.nix
               ./modules/cli/remote.nix
               ./modules/cli/secrets.nix
               ./modules/fonts.nix
-              ./modules/gui/base.nix
+              ./modules/gui/gui-base.nix
               ./modules/gui/darwin.nix
               ./modules/gui/linux.nix
-              ./modules/gui/gui_work_tools_base.nix
+              ./modules/gui/gui-work-tools.nix
+              ./modules/gui/noctalia-shell.nix
+              ./modules/gui/niri-config.nix
+              ./modules/gui/waybar-config.nix
+              ./modules/gui/swaybg-config.nix
             ];
           };
         }

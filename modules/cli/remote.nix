@@ -6,6 +6,8 @@
     # SSH & networking
     openssh
     rsync
+    nmap
+    nc
     #tailscale
     
     # Remote system management
